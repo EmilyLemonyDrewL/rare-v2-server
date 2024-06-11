@@ -9,7 +9,7 @@ class UserTypeChangeRequestSerializer(serializers.ModelSerializer):
         model = UserTypeChangeRequest
         fields = ('id', 'action', 'admin_one_id', 'admin_two_id', 'modified_user_id')
 
-class UserTypeChangeRequests(ViewSet):
+class UserTypeChangeRequestsView(ViewSet):
     def list(self, request):
         user_type_change_requests = UserTypeChangeRequest.objects.all()
         serializer = UserTypeChangeRequestSerializer(user_type_change_requests, many=True, context={'request': request})

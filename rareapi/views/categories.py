@@ -11,7 +11,7 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = ('id', 'label')
 
 
-class Categories(ViewSet):
+class CategoriesView(ViewSet):
 
     def list(self, request):
         categories = Category.objects.all()
