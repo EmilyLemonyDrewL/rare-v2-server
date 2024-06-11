@@ -4,3 +4,6 @@ from .rare_users import RareUserView
 from .tag import TagView
 from .categories import CategoriesView
 from .user_type_change_request import UserTypeChangeRequestsView
+from .comments import CommentView
+from .post_reactions import PostReactionView
+from .reactions import ReactionView
