@@ -14,7 +14,7 @@ class RareUserSerializer(serializers.ModelSerializer):
         model = RareUser
         fields = ("first_name", "last_name", "bio", "profile_image_url", "email", "created_on", "active", "is_staff", "uid")
 
-class RareUserView:
+class RareUserView(ViewSet):
     """
     All the User Views
     """
