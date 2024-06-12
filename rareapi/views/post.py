@@ -41,9 +41,9 @@ class PostView(ViewSet):
         # for category in request.data.get("categories", []):
         #         add_category = Ca
         
-        for tag_id in request.data.get("tags", []):
-            add_tag = Tag.objects.get(pk=tag_id)
-            PostTag.objects.create(post=post, tag=add_tag)
+        # for tag_id in request.data.get("tags", []):
+        #     add_tag = Tag.objects.get(pk=tag_id)
+        #     PostTag.objects.create(post=post, tag=add_tag)
         
         serializer = PostSerializer(post)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
