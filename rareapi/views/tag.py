@@ -23,6 +23,11 @@ class TagView(ViewSet):
         tag.save()
         serializer = TagSerializer(tag)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+    def destroy(self, request, pk):
+        tag = Tag.objects.get(pk=pk)
+        tag.delete()
+        return Response(None, status=status.HTTP_204_NO_CONTENT)
 
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
