@@ -44,14 +44,28 @@ class SubscriptionView(ViewSet):
         """
         Check if the follower is subscribed to the author
         """
-        follower_id = request.query_params.get('follower_id')
+        uid = request.query_params.get('uid')
+        print("uid: ", uid)
         author_id = request.query_params.get('author_id')
-        
-        if not follower_id or not author_id:
-            return Response({"message": "follower_id and author_id are required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        if not uid or not author_id:
+            return Response({"message": "uid and author_id are required"}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            Subscription.objects.get(follower_id=follower_id, author_id=author_id)
+            follower = RareUser.objects.get(uid=uid)
+            author = RareUser.objects.get(pk=author_id)
+            print(follower.first_name)
+            print(author.first_name)
+            
+        except RareUser.DoesNotExist:
+            return Response({"message": "Follower does not exist"}, status=status.HTTP_404_NOT_FOUND)
+
+        print("follower id: ", follower.id)
+        # print(subscription)
+
+        try:
+            Subscription.objects.get(follower=follower, author_id=author_id)
+            # subscription = Subscription.objects.get(follower=follower)
             is_subscribed = True
         except Subscription.DoesNotExist:
             is_subscribed = False
