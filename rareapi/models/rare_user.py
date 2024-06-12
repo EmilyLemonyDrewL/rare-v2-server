@@ -10,4 +10,3 @@ class RareUser(models.Model):
     active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     uid = models.CharField(max_length=100)
-    
