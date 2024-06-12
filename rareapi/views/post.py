@@ -2,7 +2,7 @@ from django.http import HttpResponseServerError
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from rest_framework import serializers, status
-from rareapi.models import Post
+from rareapi.models import Post, Category, PostTag, Tag
 
 class PostView(ViewSet):
 
@@ -18,9 +18,15 @@ class PostView(ViewSet):
         posts = Post.objects.all()
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data)
-      
+    
+    def list_by_user(self, request, pk):
+        rare_user_id = Post.objects.get(pk=request.data["uid"])
+        posts = Post.objects.all(rare_user_id)
+        serializer = PostSerializer(posts, many=True)
+        return Response(serializer.data)
+
     def create(self, request):
-        rare_user = Post.objects.get(pk=request.data["rare_user_id"])
+        rare_user = Post.objects.get(pk=request.data["uid"])
         
         post = Post.objects.create(
             rare_user = rare_user,
@@ -31,6 +37,14 @@ class PostView(ViewSet):
             approved = False
         )
         post.save()
+        
+        # for category in request.data.get("categories", []):
+        #         add_category = Ca
+        
+        for tag_id in request.data.get("tags", []):
+            add_tag = Tag.objects.get(pk=tag_id)
+            PostTag.objects.create(post=post, tag=add_tag)
+        
         serializer = PostSerializer(post)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
         
@@ -52,5 +66,5 @@ class PostView(ViewSet):
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model: Post
-        fields = ('id', 'rare_user_id', 'category_id', 'title', 'publication_date', 'image_url', 'content', 'approved')
+        fields = ('id', 'rare_user_id', 'category_id', 'title', 'publication_date', 'image_url', 'content', 'approved', 'tags')
         depth = 1
