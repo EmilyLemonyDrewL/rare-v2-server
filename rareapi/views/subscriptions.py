@@ -3,7 +3,7 @@ from django.http import HttpResponseServerError
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from rest_framework import status
-from rareapi.models import Subscription
+from rareapi.models import Subscription, RareUser
 from rest_framework.decorators import action
 
 class SubscriptionSerializer(serializers.ModelSerializer):
@@ -12,7 +12,7 @@ class SubscriptionSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = Subscription
-        fields = ("follower", "author", "created_on", "ended_on")
+        fields = ("follower", "author", "created_on")
 
 class SubscriptionView(ViewSet):
 
@@ -20,9 +20,13 @@ class SubscriptionView(ViewSet):
         """
         function to create a subscription
         """
+
+        follower = RareUser.objects.get(uid=request.data["uid"])
+        
+
         sub = Subscription.objects.create(
-        follower_id = request.data["uid"],
-        author_id = request.data["author_id"],
+        follower = follower,
+        author = RareUser.objects.get(pk=request.data["author_id"])
         )
         serliazer = SubscriptionSerializer(sub)
         return Response(serliazer.data, status=status.HTTP_201_CREATED)
