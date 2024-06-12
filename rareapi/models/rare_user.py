@@ -7,6 +7,6 @@ class RareUser(models.Model):
     profile_image_url = models.CharField(max_length=400)
     email = models.CharField(max_length=200)
     created_on = models.DateField(auto_now=True)
-    active = models.BooleanField(default=True)
-    is_staff = models.BooleanField(default=True)
+    active = models.BooleanField(default=False)
+    is_staff = models.BooleanField(default=False)
     uid = models.CharField(max_length=100)
