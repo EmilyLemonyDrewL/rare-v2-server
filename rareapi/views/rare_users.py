@@ -21,9 +21,13 @@ class RareUserView(ViewSet):
 
     def retrieve(self, request, pk):
         """
-        function to get single user
+        Function to get a single user
         """
-        user = RareUser.objects.get(pk=pk)
+        try:
+            user = RareUser.objects.get(pk=pk)
+        except RareUser.DoesNotExist:
+            return Response("")
+        
         serializer = RareUserSerializer(user)
         return Response(serializer.data)
 
@@ -48,7 +52,7 @@ class RareUserView(ViewSet):
         """
         function to update a user
         """
-        print(request.data["is_staff"])
+
         user = RareUser.objects.get(pk=pk)
         user.first_name = request.data["first_name"]
         user.last_name = request.data["last_name"]
