@@ -38,12 +38,12 @@ class RareUserView(ViewSet):
             profile_image_url = request.data["profile_image_url"],
             email = request.data["email"],
             active = True,
-            is_staff = False,
+            is_staff = True,
             uid = request.data["uid"]
         )
         serializer = RareUserSerializer(user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-    
+
     def update(self, request, pk):
         """
         function to update a user
@@ -59,7 +59,7 @@ class RareUserView(ViewSet):
         user.uid = request.data["uid"]
 
         return Response(status=status.HTTP_204_NO_CONTENT)
-    
+
     def destroy(self, request, pk):
         """
         function to delete a user
