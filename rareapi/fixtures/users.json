@@ -1,0 +1,32 @@
+[
+  {
+    "model": "rareapi.RareUser",
+    "pk": 1,
+    "fields": {
+      "first_name": "User",
+      "last_name": "One",
+      "bio": 0,
+      "profile_image_url": "",
+      "email": "user1@hotmail.com",
+      "created_on": "2024-06-02",
+      "active": "False",
+      "is_staff": "False",
+      "uid": 1
+    }
+  },
+  {
+    "model": "rareapi.RareUser",
+    "pk": 2,
+    "fields": {
+      "first_name": "User",
+      "last_name": "Two",
+      "bio": 0,
+      "profile_image_url": "",
+      "email": "user2@hotmail.com",
+      "created_on": "2024-06-02",
+      "active": "False",
+      "is_staff": "False",
+      "uid": 1
+    }
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "model": "rareapi.Reaction",
+    "pk": 1,
+    "fields": {
+      "label": "heart",
+      "image_url": ""
+    }
+  },
+  {
+    "model": "rareapi.Reaction",
+    "pk": 2,
+    "fields": {
+      "label": "broken heart",
+      "image_url": ""
+    }
+  }
+]

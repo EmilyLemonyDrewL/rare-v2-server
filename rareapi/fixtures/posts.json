@@ -1,0 +1,26 @@
+[
+  {
+    "model": "rareapi.Post",
+    "pk": 1,
+    "fields": {
+      "rare_user": 2,
+      "title": "post 1",
+      "publication_date": "2024-06-08",
+      "image_url": "",
+      "content": "This is a post",
+      "approved": "False"
+    }
+  },
+  {
+    "model": "rareapi.Post",
+    "pk": 2,
+    "fields": {
+      "rare_user": 2,
+      "title": "post 2",
+      "publication_date": "2024-06-08",
+      "image_url": "",
+      "content": "This is a post too",
+      "approved": "False"
+    }
+  }
+]
