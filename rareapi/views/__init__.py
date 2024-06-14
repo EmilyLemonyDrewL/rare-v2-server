@@ -7,3 +7,4 @@ from .user_type_change_request import UserTypeChangeRequestsView
 from .comments import CommentView
 from .post_reactions import PostReactionView
 from .reactions import ReactionView
+from .auth import check_user
