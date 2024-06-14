@@ -31,7 +31,7 @@ class PostReactionView(ViewSet):
             reaction = reaction,
         )
 
-        serializer = PostReactionViewSerializer(post_reaction)
+        serializer = PostReactionSerializer(post_reaction)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def update(self, request, pk):
