@@ -21,11 +21,13 @@ def check_user(request):
         data = {
             'id': user.id,
             'email': user.email,
-            "profile_img_url": user.profile_image_url,
+            "profile_image_url": user.profile_image_url,
             'is_staff': user.is_staff,
             'active': user.active,
             'uid': user.uid,
-            'bio': user.bio
+            'bio': user.bio,
+            'first_name': user.first_name,
+            'last_name': user.last_name
         }
         return Response(data)
     else:
