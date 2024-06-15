@@ -38,14 +38,13 @@ class PostView(ViewSet):
             category = category,
             approved = False
         )
-        post.save()
-        
-        # for category in request.data.get("categories", []):
-        #         add_category = Ca
-        
-        # for tag_id in request.data.get("tags", []):
-        #     add_tag = Tag.objects.get(pk=tag_id)
-        #     PostTag.objects.create(post=post, tag=add_tag)
+        for tag_id in request.data["tags"]:
+                
+            tag = Tag.objects.get(pk=tag_id)
+            PostTag.objects.create(
+                post = post,
+                tag = tag
+            )
         
         serializer = PostSerializer(post)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -54,10 +53,24 @@ class PostView(ViewSet):
         post = Post.objects.get(pk=pk)
         category = Category.objects.get(pk=request.data["category"])
         post.title = request.data["title"]
-        post.publication_date = request.data["publicationDate"]
-        post.image_url = request.data["imageUrl"]
+        # post.publication_date = request.data["publicationDate"]
+        post.image_url = request.data["image_url"]
         post.content = request.data["content"]
-        category = category
+        post.category = category
+        
+        post_tags = PostTag.objects.filter(post_id = post.id)
+        for tag in post_tags:
+            tag.delete()
+            
+        post.save()
+        
+        for tag_id in request.data["tags"]:
+                
+            tag = Tag.objects.get(pk=tag_id)
+            PostTag.objects.create(
+                post = post,
+                tag = tag
+            )
         
         serializer = PostSerializer(post)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -70,5 +83,5 @@ class PostView(ViewSet):
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
-        fields = ('id', 'rare_user_id', 'category', 'title', 'publication_date', 'image_url', 'content', 'approved', 'tags')
+        fields = ('id', 'rare_user_id', 'rare_user', 'category', 'title', 'publication_date', 'image_url', 'content', 'approved', 'tags')
         depth = 2
