@@ -5,14 +5,16 @@ from .tag import Tag
 
 class Post(models.Model):
     rare_user = models.ForeignKey(RareUser, on_delete=models.CASCADE, related_name="post",)
-    categories = models.ManyToManyField(Category, related_name='posts')
+    # categories = models.ManyToManyField(Category, related_name='posts')
+    # categories = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="posts")
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, related_name="posts")
     tags = models.ManyToManyField(Tag, through='PostTag', related_name="posts")
     title = models.CharField(max_length=100)
     publication_date = models.DateField()
     image_url = models.CharField(max_length=400)
     content = models.CharField(max_length=1000)
     approved = models.BooleanField(default=False)
-    
+
     @property
     def rare_user_id(self):
         return self.rare_user.id
