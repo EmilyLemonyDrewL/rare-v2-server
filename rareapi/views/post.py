@@ -27,13 +27,15 @@ class PostView(ViewSet):
 
     def create(self, request):
         rare_user = RareUser.objects.get(uid=request.data["uid"])
-        
+        category = Category.objects.get(pk=request.data["category"])
+
         post = Post.objects.create(
             rare_user = rare_user,
             title = request.data["title"],
             publication_date = request.data["publicationDate"],
             image_url = request.data["imageUrl"],
             content = request.data["content"],
+            category = category,
             approved = False
         )
         post.save()
@@ -50,10 +52,12 @@ class PostView(ViewSet):
         
     def update(self, request, pk):
         post = Post.objects.get(pk=pk)
+        category = Category.objects.get(pk=request.data["category"])
         post.title = request.data["title"]
         post.publication_date = request.data["publicationDate"]
         post.image_url = request.data["imageUrl"]
         post.content = request.data["content"]
+        category = category
         
         serializer = PostSerializer(post)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -66,5 +70,5 @@ class PostView(ViewSet):
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
-        fields = ('id', 'rare_user_id', 'categories', 'title', 'publication_date', 'image_url', 'content', 'approved', 'tags')
-        depth = 1
+        fields = ('id', 'rare_user_id', 'category', 'title', 'publication_date', 'image_url', 'content', 'approved', 'tags')
+        depth = 2
