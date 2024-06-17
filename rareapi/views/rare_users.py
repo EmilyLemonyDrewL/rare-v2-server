@@ -12,7 +12,7 @@ class RareUserSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = RareUser
-        fields = ("first_name", "last_name", "bio", "profile_image_url", "email", "created_on", "active", "is_staff", "uid")
+        fields = ("id", "first_name", "last_name", "bio", "profile_image_url", "email", "created_on", "active", "is_staff", "uid")
 
 class RareUserView(ViewSet):
     """
@@ -27,8 +27,18 @@ class RareUserView(ViewSet):
             user = RareUser.objects.get(pk=pk)
         except RareUser.DoesNotExist:
             return Response("")
-        
+
         serializer = RareUserSerializer(user)
+        return Response(serializer.data)
+    def list(self, request):
+        """
+        Function to get all users
+        """
+        users = RareUser.objects.all()
+
+        serializer = RareUserSerializer(
+            users, many=True, context={'request': request}
+        )
         return Response(serializer.data)
 
     def create(self, request):
@@ -59,7 +69,7 @@ class RareUserView(ViewSet):
         user.bio = request.data["bio"]
         user.profile_image_url = request.data["profile_image_url"]
         user.email = request.data["email"]
-        user.active = True
+        user.active = request.data["active"]
         user.is_staff = request.data["is_staff"]
         user.uid = request.data["uid"]
         user.save()

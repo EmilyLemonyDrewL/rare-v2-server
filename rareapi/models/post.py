@@ -12,7 +12,7 @@ class Post(models.Model):
     image_url = models.CharField(max_length=400)
     content = models.CharField(max_length=1000)
     approved = models.BooleanField(default=False)
-    
+
     @property
     def rare_user_id(self):
         return self.rare_user.id
