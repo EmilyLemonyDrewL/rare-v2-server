@@ -15,6 +15,7 @@ class PostView(ViewSet):
             return Response({'message': ex.args[0]}, status=status.HTTP_404_NOT_FOUND)
 
     def list(self, request):
+        print("this one")
         posts = Post.objects.all()
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data)
@@ -23,6 +24,7 @@ class PostView(ViewSet):
         rare_user_id = Post.objects.get(pk=request.data["uid"])
         posts = Post.objects.all(rare_user_id)
         serializer = PostSerializer(posts, many=True)
+
         return Response(serializer.data)
 
     def create(self, request):
@@ -33,7 +35,7 @@ class PostView(ViewSet):
             rare_user = rare_user,
             title = request.data["title"],
             publication_date = request.data["publicationDate"],
-            image_url = request.data["imageUrl"],
+            image_url = request.data["image_url"],
             content = request.data["content"],
             category = category,
             approved = False
