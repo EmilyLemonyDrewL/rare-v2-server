@@ -43,44 +43,6 @@ class ReactionView(ViewSet):
         reaction = Reaction.objects.get(pk=pk)
         reaction.delete()
         return Response(None, status=status.HTTP_204_NO_CONTENT)
-    
-    @action(methods=['post'], detail=False)
-    def check_if_emoji_exists(self, request):
-
-        image_url = request.data.get('emoji')
-        user = RareUser.objects.get(uid=request.data.get('user_id'))
-        post = Post.objects.get(pk=request.data.get('post_id'))
-        reaction_exists = Reaction.objects.filter(image_url=image_url).exists()
-
-        if reaction_exists:
-
-            reaction = Reaction.objects.get(image_url=image_url)
-            post_reaction_exists = PostReaction.objects.filter(post=post, rare_user=user, reaction=reaction).exists()
-            
-            if post_reaction_exists:             
-                post_reaction = PostReaction.objects.filter(post=post, rare_user=user, reaction=reaction)
-                post_reaction.delete()
-                return Response(status=status.HTTP_204_NO_CONTENT)
-            
-            else:
-                PostReaction.objects.create(
-                    rare_user = user,
-                    post = post,
-                    reaction = reaction
-                )
-
-        else:
-            reaction = Reaction.objects.create(
-                label = "emoji",
-                image_url = image_url
-            )
-            PostReaction.objects.create(
-                rare_user = user,
-                post = post,
-                reaction = reaction
-            )   
-
-        return Response(status=status.HTTP_200_OK)
 
 class ReactionSerializer(serializers.ModelSerializer):
     class Meta:
