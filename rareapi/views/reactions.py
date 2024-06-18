@@ -46,26 +46,29 @@ class ReactionView(ViewSet):
     
     @action(methods=['post'], detail=False)
     def check_if_emoji_exists(self, request):
-        image_url = request.data.get('emoji')
 
+        image_url = request.data.get('emoji')
         user = RareUser.objects.get(uid=request.data.get('user_id'))
         post = Post.objects.get(pk=request.data.get('post_id'))
         exists = Reaction.objects.filter(image_url=image_url).exists()
 
         if exists:
-            
+
             reaction = Reaction.objects.get(image_url=image_url)
-            alreadySelected = PostReaction.objects.filter(post=post, rare_user=user, reaction = reaction).exists()
+            alreadySelected = PostReaction.objects.filter(post=post, rare_user=user, reaction=reaction).exists()
             
             if alreadySelected:             
-                post_reaction = PostReaction.objects.filter(post=post, rare_user=user, reaction= reaction)
+                post_reaction = PostReaction.objects.filter(post=post, rare_user=user, reaction=reaction)
                 post_reaction.delete()
+                return Response(status=status.HTTP_200_OK)
+            
             else:
                 PostReaction.objects.create(
                     rare_user = user,
                     post = post,
                     reaction = reaction
                 )
+
         else:
             reaction = Reaction.objects.create(
                 label = "emoji",
