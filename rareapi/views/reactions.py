@@ -56,7 +56,7 @@ class ReactionView(ViewSet):
             
             reaction = Reaction.objects.get(image_url=image_url)
             alreadySelected = PostReaction.objects.filter(post=post, rare_user=user, reaction = reaction).exists()
-
+            
             if alreadySelected:             
                 post_reaction = PostReaction.objects.filter(post=post, rare_user=user, reaction= reaction)
                 post_reaction.delete()
