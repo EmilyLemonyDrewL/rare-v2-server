@@ -3,6 +3,8 @@ from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from rest_framework import serializers, status
 from rareapi.models import Reaction, PostReaction, RareUser, Post
+from rest_framework.decorators import action
+import json
 
 class PostReactionView(ViewSet):
 
@@ -51,6 +53,26 @@ class PostReactionView(ViewSet):
         post_reaction = PostReaction.objects.get(pk=pk)
         post_reaction.delete()
         return Response(None, status=status.HTTP_204_NO_CONTENT)
+    
+    @action(methods=['get'], detail=True)
+    def getReactions(self, request, pk):
+        post_reactions = PostReaction.objects.filter(post_id = pk)
+        reactions_amounts = []
+
+        for post_reaction in post_reactions:
+            found = False
+            for reaction in reactions_amounts:
+                if post_reaction.reaction_id == reaction.get('id'):
+                    reaction['amount'] += 1
+                    found = True
+                    break
+            if not found:
+                reactions_amounts.append({'id': post_reaction.reaction.id, 'amount': 1})
+
+
+        json_data = json.dumps(reactions_amounts)
+
+        return Response(json_data)
 
 class PostReactionSerializer(serializers.ModelSerializer):
     class Meta:
