@@ -15,7 +15,6 @@ class PostView(ViewSet):
             return Response({'message': ex.args[0]}, status=status.HTTP_404_NOT_FOUND)
 
     def list(self, request):
-        print("this one")
         posts = Post.objects.all()
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data)
@@ -81,7 +80,7 @@ class PostView(ViewSet):
         post = Post.objects.get(pk=pk)
         post.delete()
         return Response(None, status=status.HTTP_204_NO_CONTENT)
-              
+        
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
