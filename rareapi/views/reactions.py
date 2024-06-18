@@ -50,17 +50,17 @@ class ReactionView(ViewSet):
         image_url = request.data.get('emoji')
         user = RareUser.objects.get(uid=request.data.get('user_id'))
         post = Post.objects.get(pk=request.data.get('post_id'))
-        exists = Reaction.objects.filter(image_url=image_url).exists()
+        reaction_exists = Reaction.objects.filter(image_url=image_url).exists()
 
-        if exists:
+        if reaction_exists:
 
             reaction = Reaction.objects.get(image_url=image_url)
-            alreadySelected = PostReaction.objects.filter(post=post, rare_user=user, reaction=reaction).exists()
+            post_reaction_exists = PostReaction.objects.filter(post=post, rare_user=user, reaction=reaction).exists()
             
-            if alreadySelected:             
+            if post_reaction_exists:             
                 post_reaction = PostReaction.objects.filter(post=post, rare_user=user, reaction=reaction)
                 post_reaction.delete()
-                return Response(status=status.HTTP_200_OK)
+                return Response(status=status.HTTP_204_NO_CONTENT)
             
             else:
                 PostReaction.objects.create(
