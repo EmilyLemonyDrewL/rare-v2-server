@@ -45,7 +45,6 @@ class SubscriptionView(ViewSet):
         Check if the follower is subscribed to the author
         """
         uid = request.query_params.get('uid')
-        print("uid: ", uid)
         author_id = request.query_params.get('author_id')
 
         if not uid or not author_id:
@@ -54,8 +53,6 @@ class SubscriptionView(ViewSet):
         try:
             follower = RareUser.objects.get(uid=uid)
             author = RareUser.objects.get(pk=author_id)
-            print(follower.first_name)
-            print(author.first_name)
             
         except RareUser.DoesNotExist:
             return Response({"message": "Follower does not exist"}, status=status.HTTP_404_NOT_FOUND)

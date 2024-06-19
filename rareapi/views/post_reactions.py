@@ -21,7 +21,7 @@ class PostReactionView(ViewSet):
 
     def create(self, request):
 
-        rare_user = RareUser.objects.get(pk=request.data['rare_user_id'])
+        rare_user = RareUser.objects.get(uid=request.data['user_id'])
         post = Post.objects.get(pk=request.data['post_id'])
         reaction = Reaction.objects.get(pk=request.data['reaction_id'])
 
