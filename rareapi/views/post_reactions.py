@@ -111,6 +111,27 @@ class PostReactionView(ViewSet):
             )   
 
         return Response(status=status.HTTP_200_OK)
+    
+    @action(methods=['post'], detail=False)
+    def post_gif(self, request):
+        print("received git")
+        rare_user = RareUser.objects.get(uid=request.data.get('user_id'))
+        post = Post.objects.get(pk=request.data.get('post_id'))
+        reaction = Reaction.objects.get(pk=request.data["reaction_id"])
+        already_selected = PostReaction.objects.filter(rare_user=rare_user, post=post, reaction=reaction).exists()
+
+        if already_selected:             
+            post_reaction = PostReaction.objects.filter(post=post, rare_user=rare_user, reaction= reaction)
+            post_reaction.delete()
+        else:
+            PostReaction.objects.create(
+                rare_user = rare_user,
+                post = post,
+                reaction = reaction
+            )
+        
+        return Response(status=status.HTTP_200_OK)
+
 
 class PostReactionSerializer(serializers.ModelSerializer):
     class Meta:

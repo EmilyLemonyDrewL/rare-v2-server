@@ -7,4 +7,6 @@
 -- DROP TABLE rareapi_comment;
 -- DROP TABLE rareapi_category;
 
-DELETE FROM rareapi_postreaction where post_id = 1;
+-- DELETE FROM rareapi_postreaction where post_id = 1;
+
+DELETE FROM rareapi_reaction where id = 27;
