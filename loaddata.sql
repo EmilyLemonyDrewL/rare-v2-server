@@ -4,5 +4,7 @@
 
 -- DELETE FROM django_migrations where id > 17;
 
-DROP TABLE rareapi_comment;
-DROP TABLE rareapi_category;
+-- DROP TABLE rareapi_comment;
+-- DROP TABLE rareapi_category;
+
+DELETE FROM rareapi_postreaction where post_id = 1;
