@@ -15,16 +15,18 @@ class PostView(ViewSet):
             return Response({'message': ex.args[0]}, status=status.HTTP_404_NOT_FOUND)
 
     def list(self, request):
-        posts = Post.objects.all()
-        serializer = PostSerializer(posts, many=True)
-        return Response(serializer.data)
-    
-    def list_by_user(self, request, pk):
-        rare_user_id = Post.objects.get(pk=request.data["uid"])
-        posts = Post.objects.all(rare_user_id)
-        serializer = PostSerializer(posts, many=True)
-
-        return Response(serializer.data)
+        try:
+            rare_user =  request.query_params.get('uid', None)
+            if rare_user is not None:
+                rare_user_id = RareUser.objects.get(uid = rare_user)
+                posts = Post.objects.filter(rare_user = rare_user_id)
+            else:
+                posts = Post.objects.all()
+            
+            serializer = PostSerializer(posts, many=True)
+            return Response(serializer.data)
+        except Exception as e:
+            return Response({'message': f'An error occurred: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def create(self, request):
         rare_user = RareUser.objects.get(uid=request.data["uid"])
@@ -54,7 +56,6 @@ class PostView(ViewSet):
         post = Post.objects.get(pk=pk)
         category = Category.objects.get(pk=request.data["category"])
         post.title = request.data["title"]
-        # post.publication_date = request.data["publicationDate"]
         post.image_url = request.data["image_url"]
         post.content = request.data["content"]
         post.category = category

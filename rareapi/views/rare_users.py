@@ -24,7 +24,7 @@ class RareUserView(ViewSet):
         Function to get a single user
         """
         try:
-            user = RareUser.objects.get(pk=pk)
+            user = RareUser.objects.get(uid=pk)
         except RareUser.DoesNotExist:
             return Response("")
 
