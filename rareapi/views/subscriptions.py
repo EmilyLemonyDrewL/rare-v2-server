@@ -25,8 +25,8 @@ class SubscriptionView(ViewSet):
         
 
         sub = Subscription.objects.create(
-        follower = follower,
-        author = RareUser.objects.get(pk=request.data["author_id"])
+            follower = follower,
+            author = RareUser.objects.get(uid=request.data["author_id"])
         )
         serliazer = SubscriptionSerializer(sub)
         return Response(serliazer.data, status=status.HTTP_201_CREATED)
@@ -45,7 +45,6 @@ class SubscriptionView(ViewSet):
         Check if the follower is subscribed to the author
         """
         uid = request.query_params.get('uid')
-        print("uid: ", uid)
         author_id = request.query_params.get('author_id')
 
         if not uid or not author_id:
@@ -54,8 +53,6 @@ class SubscriptionView(ViewSet):
         try:
             follower = RareUser.objects.get(uid=uid)
             author = RareUser.objects.get(pk=author_id)
-            print(follower.first_name)
-            print(author.first_name)
             
         except RareUser.DoesNotExist:
             return Response({"message": "Follower does not exist"}, status=status.HTTP_404_NOT_FOUND)
@@ -71,4 +68,3 @@ class SubscriptionView(ViewSet):
             is_subscribed = False
 
         return Response({"is_subscribed": is_subscribed}, status=status.HTTP_200_OK)
-
