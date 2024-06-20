@@ -4,6 +4,7 @@ from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from rest_framework import serializers, status
 from rareapi.models import Comment, Post, RareUser
+from .rare_users import RareUserSerializer
 
 class CommentView(ViewSet):
 
@@ -52,6 +53,7 @@ class CommentView(ViewSet):
         return Response(None, status=status.HTTP_204_NO_CONTENT)
 
 class CommentSerializer(serializers.ModelSerializer):
+    author = RareUserSerializer()
     class Meta:
         model = Comment
         fields = ('id', 'post', 'author', 'post', 'content', 'created_on')
