@@ -6,6 +6,8 @@ from rest_framework import serializers, status
 from rareapi.models import UserTypeChangeRequest, RareUser
 from .rare_users import RareUserSerializer
 
+# no sqlite3
+
 class UserTypeChangeRequestSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserTypeChangeRequest
