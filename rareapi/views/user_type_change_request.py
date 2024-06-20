@@ -29,6 +29,7 @@ class UserTypeChangeRequestsView(ViewSet):
         user_type_change_request = UserTypeChangeRequest()
         user_type_change_request.action = request.data["action"]
         user_type_change_request.modified_user_id = RareUser.objects.get(pk=request.data["modified_user_id"])
+        user_type_change_request.admin_one_id = RareUser.objects.get(pk=request.data["admin_one_id"])
 
         user_type_change_request.save()
 
@@ -36,14 +37,24 @@ class UserTypeChangeRequestsView(ViewSet):
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+
     def update(self, request, pk):
         user_type_change_request = UserTypeChangeRequest.objects.get(pk=pk)
-        user_type_change_request.action = request.data["action"]
-        user_type_change_request.admin_one_id = RareUser.objects.get(pk=request.data["admin_one_id"])
-        user_type_change_request.admin_two_id = RareUser.objects.get(pk=request.data["admin_two_id"])
-        user_type_change_request.modified_user_id = RareUser.objects.get(pk=request.data["modified_user_id"])
-
+        admin_one = RareUser.objects.get(pk=request.data["admin_one_id"])
+        admin_two = RareUser.objects.get(pk=request.data["admin_two_id"])
+        user_type_change_request.admin_one_id = admin_one
+        user_type_change_request.admin_two_id = admin_two
         user_type_change_request.save()
+        modified_user= RareUser.objects.get(pk=user_type_change_request.modified_user_id.id)
+
+        if user_type_change_request.action == "promotion":
+            modified_user.is_staff = True
+            modified_user.save()
+        elif user_type_change_request.action == "demotion":
+            modified_user.is_staff = False
+            modified_user.save()
+
+
 
         return Response({}, status=status.HTTP_204_NO_CONTENT)
 
