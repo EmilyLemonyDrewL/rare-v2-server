@@ -1,4 +1,5 @@
 from django.http import HttpResponseServerError
+from rest_framework.decorators import action
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from rest_framework import serializers, status
@@ -15,7 +16,11 @@ class CommentView(ViewSet):
             return Response({'message': ex.args[0]}, status=status.HTTP_404_NOT_FOUND)
 
     def list(self, request):
-        comments = Comment.objects.all()
+        post_id = request.query_params.get('post_id', None)
+        if post_id is not None:
+            comments = Comment.objects.filter(post_id=post_id)
+        else:
+            comments = Comment.objects.all()
         serializer = CommentSerializer(comments, many=True)
         return Response(serializer.data)
 
@@ -26,7 +31,7 @@ class CommentView(ViewSet):
 
         comment = Comment.objects.create(
             author = author,
-            post = post,
+            post=post,
             content = request.data['content'],
         )
 
@@ -35,10 +40,6 @@ class CommentView(ViewSet):
 
     def update(self, request, pk):
         comment = Comment.objects.get(pk=pk)
-        author = RareUser.objects.get(pk=request.data['rare_user_id'])
-        comment.author = author
-        post = Post.objects.get(pk=request.data['post_id'])
-        comment.post = post
         comment.content = request.data['content']
         comment.save()
 
@@ -53,5 +54,5 @@ class CommentView(ViewSet):
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields = ('id', 'author_id', 'post_id', 'content', 'created_on')
+        fields = ('id', 'post', 'author', 'post', 'content', 'created_on')
         read_only_fields = ['created_on']
