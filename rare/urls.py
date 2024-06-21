@@ -21,7 +21,7 @@ from rareapi.views import SubscriptionView, RareUserView, ReactionView, PostReac
 
 router = routers.DefaultRouter(trailing_slash=False)
 
-router.register(r'subscriptions', SubscriptionView, basename='subscriptions')
+router.register(r'subscriptions', SubscriptionView, 'subscription')
 router.register(r'users', RareUserView, 'user')
 router.register(r'comments', CommentView, 'comment')
 router.register(r'reactions', ReactionView, 'reaction')

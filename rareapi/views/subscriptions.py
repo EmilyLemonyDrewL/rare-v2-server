@@ -17,75 +17,55 @@ class SubscriptionSerializer(serializers.ModelSerializer):
 class SubscriptionView(ViewSet):
 
     def create(self, request):
-        """
-        function to create a subscription
-        """
-
         follower = RareUser.objects.get(uid=request.data["uid"])
+        author = RareUser.objects.get(uid=request.data["author_id"])
         
         sub = Subscription.objects.create(
             follower = follower,
-            author = RareUser.objects.get(author_id=request.data["author_id"])
+            author = author
         )
+        
         serliazer = SubscriptionSerializer(sub)
         return Response(serliazer.data, status=status.HTTP_201_CREATED)
     
     def list(self, request):
-
         follower = RareUser.objects.get(uid=request.data["uid"])
-
         subscriptions = Subscription.objects.filter(follower=follower)
 
         posts = []
         authors = []
 
         for sub in subscriptions:
+            
             author = RareUser.objects.get(uid=sub.author_id)
-
-            posts_of_sub = Post.objects.filter(rare_user=author)
+            posts_of_author = Post.objects.filter(rare_user=author)
 
             serialzed_author = RareUserSerializer(author)
-            serializer = PostSerializer(posts_of_sub, many=True)
+            serializer_posts = PostSerializer(posts_of_author, many=True)
 
             authors.append(serialzed_author)
-            posts.append(serializer)
+            posts.append(serializer_posts)
 
         return Response({'posts': posts, 'authors': authors})
     
     def destroy(self, request, pk):
-        """
-        function to delete a subscription
-        """
+    
         sub = Subscription.objects.get(pk=pk)
         sub.delete()
         return Response(None, status=status.HTTP_204_NO_CONTENT)
     
-    @action(detail=False, methods=['GET'], url_path='is_subscribed')
+    @action(detail=False, methods=['post'])
     def is_subscribed(self, request):
         """
         Check if the follower is subscribed to the author
         """
-        uid = request.query_params.get('uid')
-        author_id = request.query_params.get('author_id')
 
-        if not uid or not author_id:
-            return Response({"message": "uid and author_id are required"}, status=status.HTTP_400_BAD_REQUEST)
+        author = RareUser.objects.get(pk=request.data["author_id"])
+        follower = RareUser.objects.get(uid=request.data["uid"])
 
-        try:
-            follower = RareUser.objects.get(uid=uid)
-            author = RareUser.objects.get(pk=author_id)
-            
-        except RareUser.DoesNotExist:
-            return Response({"message": "Follower does not exist"}, status=status.HTTP_404_NOT_FOUND)
-
-        print("follower id: ", follower.id)
-        # print(subscription)
-
-        try:
-            Subscription.objects.get(follower=follower, author_id=author_id)
-            # subscription = Subscription.objects.get(follower=follower)
+        if Subscription.objects.filter(follower=follower, author=author).exists():
             is_subscribed = True
-        except Subscription.DoesNotExist:
+        else:
             is_subscribed = False
 
         return Response({"is_subscribed": is_subscribed}, status=status.HTTP_200_OK)
