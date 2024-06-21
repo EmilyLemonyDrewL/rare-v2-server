@@ -3,3 +3,4 @@ loaddata.sql
 Pipfile
 Pipfile.lock
 .gitignore
+.db copy.sqlite3
