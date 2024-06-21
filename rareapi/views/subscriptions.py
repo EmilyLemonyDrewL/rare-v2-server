@@ -3,7 +3,7 @@ from django.http import HttpResponseServerError
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from rest_framework import status
-from rareapi.models import Subscription, RareUser
+from rareapi.models import Subscription, RareUser, Post
 from rest_framework.decorators import action
 
 class SubscriptionSerializer(serializers.ModelSerializer):
@@ -23,13 +23,34 @@ class SubscriptionView(ViewSet):
 
         follower = RareUser.objects.get(uid=request.data["uid"])
         
-
         sub = Subscription.objects.create(
             follower = follower,
-            author = RareUser.objects.get(uid=request.data["author_id"])
+            author = RareUser.objects.get(author_id=request.data["author_id"])
         )
         serliazer = SubscriptionSerializer(sub)
         return Response(serliazer.data, status=status.HTTP_201_CREATED)
+    
+    def list(self, request):
+
+        follower = RareUser.objects.get(uid=request.data["uid"])
+
+        subscriptions = Subscription.objects.filter(follower=follower)
+
+        posts = []
+        authors = []
+
+        for sub in subscriptions:
+            author = RareUser.objects.get(uid=sub.author_id)
+
+            posts_of_sub = Post.objects.filter(rare_user=author)
+
+            serialzed_author = RareUserSerializer(author)
+            serializer = PostSerializer(posts_of_sub, many=True)
+
+            authors.append(serialzed_author)
+            posts.append(serializer)
+
+        return Response({'posts': posts, 'authors': authors})
     
     def destroy(self, request, pk):
         """
@@ -68,3 +89,18 @@ class SubscriptionView(ViewSet):
             is_subscribed = False
 
         return Response({"is_subscribed": is_subscribed}, status=status.HTTP_200_OK)
+
+class PostSerializer(serializers.ModelSerializer):
+    comment_count = serializers.IntegerField(default=None)
+    class Meta:
+        model = Post
+        fields = ('id', 'rare_user_id', 'rare_user', 'category', 'title', 'publication_date', 'image_url', 'content', 'approved', 'tags', 'comment_count')
+        depth = 2
+
+class RareUserSerializer(serializers.ModelSerializer):
+    """
+    JSON Serializer for Rare Users
+    """
+    class Meta:
+        model = RareUser
+        fields = ("id", "first_name", "last_name", "bio", "profile_image_url", "email", "created_on", "active", "is_staff", "uid")
