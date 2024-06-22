@@ -18,7 +18,7 @@ class SubscriptionView(ViewSet):
 
     def create(self, request):
         follower = RareUser.objects.get(uid=request.data["uid"])
-        author = RareUser.objects.get(uid=request.data["author_id"])
+        author = RareUser.objects.get(pk=request.data["author_id"])
         
         sub = Subscription.objects.create(
             follower = follower,
@@ -48,12 +48,6 @@ class SubscriptionView(ViewSet):
 
         return Response({'posts': posts, 'authors': authors})
     
-    def destroy(self, request, pk):
-    
-        sub = Subscription.objects.get(pk=pk)
-        sub.delete()
-        return Response(None, status=status.HTTP_204_NO_CONTENT)
-    
     @action(detail=False, methods=['post'])
     def is_subscribed(self, request):
         """
@@ -69,6 +63,16 @@ class SubscriptionView(ViewSet):
             is_subscribed = False
 
         return Response({"is_subscribed": is_subscribed}, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=['post'])
+    def delete_sub(self, request):
+        
+        follower = RareUser.objects.get(uid=request.data["uid"])
+        author = RareUser.objects.get(pk=request.data["author_id"])
+        
+        sub = Subscription.objects.filter(author=author, follower=follower)
+        sub.delete()
+        return Response(None, status=status.HTTP_204_NO_CONTENT)
 
 class PostSerializer(serializers.ModelSerializer):
     comment_count = serializers.IntegerField(default=None)
